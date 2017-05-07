@@ -137,43 +137,48 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
                                             if(snapshot.hasChild("itemName") && snapshot.child("itemName").getValue().toString().equals(subItemName)){
                                                 ArrayList<String> urls = (ArrayList<String>) snapshot.child("itemUrl").getValue();
                                                 mFireBaseStorage = FirebaseStorage.getInstance();
-                                                final StorageReference ref1 = mFireBaseStorage.getReferenceFromUrl(urls.get(0));
-                                                final StorageReference ref2 = mFireBaseStorage.getReferenceFromUrl(urls.get(1));
-                                                final StorageReference ref3 = mFireBaseStorage.getReferenceFromUrl(urls.get(2));
-                                                ref1.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
+                                                final StorageReference ref1;
+                                                final StorageReference ref2;
+                                                final StorageReference ref3;
+                                                if(!urls.get(0).equals("0")){
+                                                    ref1 = mFireBaseStorage.getReferenceFromUrl(urls.get(0));
+                                                    ref1.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
 
-                                                    }
-                                                });
-                                                snapshot.getRef().removeValue();
+                                                        }
+                                                    });
+                                                }
+                                                if(!urls.get(1).equals("0")){
+                                                    ref2 = mFireBaseStorage.getReferenceFromUrl(urls.get(1));
+                                                    ref2.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
 
-                                                ref2.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
+                                                        }
+                                                    });
+                                                }
+                                                if(!urls.get(2).equals("0")){
+                                                    ref3 = mFireBaseStorage.getReferenceFromUrl(urls.get(2));
+                                                    ref3.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
 
-                                                    }
-                                                });
-                                                snapshot.getRef().removeValue();
-
-                                                ref3.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-
-                                                    }
-                                                });
+                                                        }
+                                                    });
+                                                }
                                                 snapshot.getRef().removeValue();
                                             }
                                         }
@@ -391,8 +396,8 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
             //holder.price.setText(getGroup(groupPosition).getItemPrice().toString());
             String prices="";
             for(int i = 0;i < getGroup(groupPosition).getItemPrice().size(); i++){
-                if(!getGroup(groupPosition).getItemPrice().get(i).equals("0")){
-                    prices=prices+i+"kg"+" = "+getGroup(groupPosition).getItemPrice().get(i)+"\n";
+                if(!getGroup(groupPosition).getItemPrice().get(i).equals("0") && !getGroup(groupPosition).getItemPrice().get(i).equals("N.A")){
+                    prices=prices+getGroup(groupPosition).getItemPrice().get(i)+"\n";
                 }
             }
             holder.price.setText(prices);

@@ -267,16 +267,7 @@ public class EditShopActivity extends AppCompatActivity {
         else{
             setTitle("Add a shop");
             offers.add(0,"Add an offer above");
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(EditShopActivity.this,android.R.layout.simple_list_item_1, android.R.id.text1, offers);
-            offersListview.setAdapter(adapter);
-            offersListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    String  itemValue    = (String) offersListview.getItemAtPosition(i);
-                    offerInput.setText(itemValue);
-
-                }
-            });
+            updateOffersList();
         }
     }
 

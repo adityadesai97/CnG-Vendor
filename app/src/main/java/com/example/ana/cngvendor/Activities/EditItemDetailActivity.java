@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.ana.cngvendor.Adapters.PriceTableAdapter;
 import com.example.ana.cngvendor.Objects.ItemDetail;
 import com.example.ana.cngvendor.R;
 import com.example.ana.cngvendor.Activities.MainActivity;
@@ -41,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.os.Build.VERSION_CODES.N;
 
 public class EditItemDetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -73,6 +76,11 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
     private ProgressBar bar1, bar2, bar3;
     private ArrayList<String> itemUris;
     private int uploadCount = 0;
+    private Spinner spinner;
+    private Spinner spinner2;
+    private List<String> units;
+    private List<String> categories;
+
 
 
     private String editDetail;
@@ -82,7 +90,7 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
     private String id;
     private int quant;
     private String unit;
-    private int maxWeightPlusOne = 4;
+    private int maxWeightPlusOne = 6;
 
     private ListView priceListview;
 
@@ -127,20 +135,23 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
 
 
         // Spinner elements
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        spinner = (Spinner) findViewById(R.id.spinner);
 
-        Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
+        spinner2 = (Spinner) findViewById(R.id.spinner2);
 
         // Spinner click listener
         spinner.setOnItemSelectedListener(this);
 
         // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("1");
-        categories.add("2");
-        categories.add("3");
+        categories = new ArrayList<String>();
+        for(int i=1;i<maxWeightPlusOne;i++){
+            categories.add(Integer.toString(i));
+        }
+//        categories.add("1");
+//        categories.add("2");
+//        categories.add("3");
 
-        List<String> units = new ArrayList<String>();
+        units = new ArrayList<String>();
         units.add("Kg");
         units.add("grams");
         units.add("Litre");
@@ -202,30 +213,6 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
         };
 
 
-        ArrayAdapter<String> priceAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-        priceListview.setAdapter(priceAdapter);
-
-        priceListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String  itemValue    = (String) priceListview.getItemAtPosition(position);
-
-                itemPriceEditText.getEditText().setText(itemValue);
-            }
-        });
-
-
-
-
-
-
-
-
-
-
-
         mFirebaseStorage = FirebaseStorage.getInstance();
         mStorageReference = mFirebaseStorage.getReference().child("item_photos");
 
@@ -283,7 +270,6 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
         if(editDetail.equals("yes")){
             setTitle("Edit your item");
 
-
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             Log.v("tag",VendorItemsListActivity.industryName+" "+VendorItemsListActivity.id+" "+item+" "+itemName);
             final DatabaseReference databaseReference = firebaseDatabase.getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(item.replaceAll("[^A-Za-z0-9 ]", ""));
@@ -311,6 +297,7 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
                             break;
                         }
                     }
+                    updatePriceList();
                 }
 
                 @Override
@@ -318,21 +305,98 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
 
                 }
             });
-//            if(quant.equals("1")){
-//                itemPriceEditText.getEditText().setText(priceTable.get(0));
-//            }
-//            else if(quant.equals("2")){
-//                itemPriceEditText.getEditText().setText(priceTable.get(1));
-//            }
-//            else if(quant.equals("3")){
-//                itemPriceEditText.getEditText().setText(priceTable.get(2));
-//            }
         }
         else{
             setTitle("Add an item");
+            updatePriceList();
         }
     }
 
+    public void updatePriceList(){
+        int invisibleEntries=0;
+
+        for(int i=0;i<priceTable.size();i++){
+            if(priceTable.get(i).equals("0") || priceTable.get(i).equals("N.A")){
+                priceTable.set(i,"N.A");
+                invisibleEntries++;
+            }
+        }
+        ArrayAdapter<String> priceAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, priceTable);
+
+
+
+        PriceTableAdapter adapter = new PriceTableAdapter(this,android.R.layout.simple_list_item_1,priceTable);
+
+        priceListview.setAdapter(adapter);
+
+        priceListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String  itemValue    = (String) priceListview.getItemAtPosition(position);
+                if(!itemValue.equals("N.A")){
+                    String[] parts = itemValue.split(" ");
+                    itemPriceEditText.getEditText().setText(parts[1]);
+                    if(parts[3].equals("1")){
+                        spinner.setSelection(0);
+                    }
+                    else if(parts[3].equals("2")){
+                        spinner.setSelection(1);
+                    }
+                    else if(parts[3].equals("3")){
+                        spinner.setSelection(2);
+                    }
+                    else if(parts[3].equals("4")){
+                        spinner.setSelection(3);
+                    }
+                    else if(parts[3].equals("5")){
+                        spinner.setSelection(4);
+                    }
+
+                    if(parts[4].equals("Kg")){
+                        spinner2.setSelection(0);
+                    }
+                    else if(parts[4].equals("grams")){
+                        spinner2.setSelection(1);
+                    }
+                    else if(parts[4].equals("Litre")){
+                        spinner2.setSelection(2);
+                    }
+                    else if(parts[4].equals("packet")){
+                        spinner2.setSelection(3);
+                    }
+                    else if(parts[4].equals("unit")){
+                        spinner2.setSelection(4);
+                    }
+                }
+                else{
+                    Toast.makeText(EditItemDetailActivity.this,"Not available",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void addPrice(View view)
+    {
+        String price=itemPriceEditText.getEditText().getText().toString();
+        if(price.equals("")){
+            priceTable.set(quant+1,"N.A");
+        }
+        else{
+            //priceTable.add(kgs, itemPriceEditText.getText().toString());
+            if(priceTable.size()>=quant+1){
+                priceTable.remove(quant+1);
+            }
+            if(unit == null){
+                Toast.makeText(this,"Please select a unit",Toast.LENGTH_SHORT);
+                return;
+            }
+
+            priceTable.add(quant+1,"Rs " + price + " for " + (quant+1) + " " + unit);
+            Toast.makeText(EditItemDetailActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+        }
+        updatePriceList();
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -350,47 +414,12 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
 
     }
 
-    public void addPrice(View view)
-    {
-        //priceTable.add(kgs, itemPriceEditText.getText().toString());
-        if(priceTable.size()>=quant+1){
-            priceTable.remove(quant+1);
-        }
-        if(unit == null){
-            Toast.makeText(this,"Please select a unit",Toast.LENGTH_SHORT);
-            return;
-        }
-
-        priceTable.add(quant+1,itemPriceEditText.getEditText().getText().toString() + " per " + unit);
-        Log.v("tag",priceTable.toString());
-        Toast.makeText(EditItemDetailActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
-    }
-
     public void uploadPic1(View view){
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/jpeg");
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER_1);
         imgFlag=1;
-//        if(uploadCount==0)
-//        {
-//            //bar1.setVisibility(View.VISIBLE);
-//            //mImageView1.setImageBitmap(null);
-//            imgFlag=1;
-//        }
-//        else if(uploadCount==1)
-//        {
-//            //bar2.setVisibility(View.VISIBLE);
-//            //mImageView2.setImageBitmap(null);
-//            imgFlag=1;
-//        }
-//        else if(uploadCount==2)
-//        {
-//            //bar3.setVisibility(View.VISIBLE);
-//            //mImageView3.setImageBitmap(null);
-//            imgFlag=1;
-//        }
-
     }
     public void uploadPic2(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -411,43 +440,6 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == RC_PHOTO_PICKER){
-//            if(resultCode == RESULT_OK){
-//                bar.setVisibility(View.VISIBLE);
-//
-//                Uri selectedImageUri = data.getData();
-//                StorageReference photoRef = mStorageReference.child(selectedImageUri.getLastPathSegment());
-//
-//                if(editDetail.equals("yes")){
-//                    StorageReference earlierRef = mFirebaseStorage.getReferenceFromUrl(earlierPhotoUrl);
-//                    earlierRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid) {
-//
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//
-//                        }
-//                    });
-//                }
-//
-//                photoRef.putFile(selectedImageUri)
-//                        .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                                // When the image has successfully uploaded, we get its download URL
-//                                itemUri = taskSnapshot.getDownloadUrl();
-//                                // Set the download URL to the message box, so that the user can send it to the database
-//                                Glide.with(itemPhoto.getContext()).load(itemUri).into(itemPhoto);
-//                                bar.setVisibility(View.GONE);
-//                            }
-//                        });
-//            }
-//        }
-
-
-
 
         if(requestCode == RC_PHOTO_PICKER_1){
             if(resultCode == RESULT_OK){
@@ -489,67 +481,6 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
                                 mImageView1.setClickable(false);
                                 bar1.setVisibility(View.GONE);
                                 imgFlag=0;
-                                //break;
-                                //case 1:
-
-//                                            if(editShop.equals("yes")){
-//                                                StorageReference earlierRef = mFirebaseStorage.getReferenceFromUrl(shopUris.get(1));
-//                                                earlierRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                    @Override
-//                                                    public void onSuccess(Void aVoid) {
-//
-//                                                    }
-//                                                }).addOnFailureListener(new OnFailureListener() {
-//                                                    @Override
-//                                                    public void onFailure(@NonNull Exception e) {
-//
-//                                                    }
-//                                                });
-//                                            }
-//
-//                                            shopUris.add(1,taskSnapshot.getDownloadUrl().toString());
-                                // Set the download URL to the message box, so that the user can send it to the database
-                                //Bitmap bitmap = MediaStore.Images.Media.getBitmap(this,imageUrl);
-//                                            Glide.with(mImageView2.getContext())
-//                                                    .load(taskSnapshot.getDownloadUrl().toString())
-//                                                    .into(mImageView2);
-//                                            uploadCount++;
-//                                            bar2.setVisibility(View.GONE);
-//                                            imgFlag=0;
-                                //break;
-                                //case 2:
-
-//                                            if(editShop.equals("yes")){
-//                                                StorageReference earlierRef = mFirebaseStorage.getReferenceFromUrl(shopUris.get(2));
-//                                                earlierRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                    @Override
-//                                                    public void onSuccess(Void aVoid) {
-//
-//                                                    }
-//                                                }).addOnFailureListener(new OnFailureListener() {
-//                                                    @Override
-//                                                    public void onFailure(@NonNull Exception e) {
-//
-//                                                    }
-//                                                });
-//                                            }
-//
-//                                            shopUris.add(2,taskSnapshot.getDownloadUrl().toString());
-                                // Set the download URL to the message box, so that the user can send it to the database
-                                //Bitmap bitmap = MediaStore.Images.Media.getBitmap(this,imageUrl);
-//                                            Glide.with(mImageView3.getContext())
-//                                                    .load(taskSnapshot.getDownloadUrl().toString())
-//                                                    .into(mImageView3);
-//                                            uploadCount++;
-//                                            bar3.setVisibility(View.GONE);
-//                                            imgFlag=0;
-                                //break;
-
-                                // }
-                                // }
-                                //else {
-//                                    Toast.makeText(EditShopActivity.this,"Can't add more :/",Toast.LENGTH_SHORT).show();
-                                //}
                             }
                         });
             }
