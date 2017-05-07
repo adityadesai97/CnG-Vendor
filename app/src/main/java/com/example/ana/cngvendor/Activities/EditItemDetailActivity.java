@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -82,6 +83,8 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
     private int quant;
     private String unit;
     private int maxWeightPlusOne = 4;
+
+    private ListView priceListview;
 
     private String earlierPhotoUrl;
 
@@ -180,6 +183,48 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
         item = i.getStringExtra("itemName");
         industry = i.getStringExtra("industryName");
         id = i.getStringExtra("shopId");
+
+
+
+
+
+
+
+        priceListview = (ListView) findViewById(R.id.priceList);
+        String[] values = new String[] { "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View"
+        };
+
+
+        ArrayAdapter<String> priceAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+
+        priceListview.setAdapter(priceAdapter);
+
+        priceListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String  itemValue    = (String) priceListview.getItemAtPosition(position);
+
+                itemPriceEditText.getEditText().setText(itemValue);
+            }
+        });
+
+
+
+
+
+
+
+
+
+
 
         mFirebaseStorage = FirebaseStorage.getInstance();
         mStorageReference = mFirebaseStorage.getReference().child("item_photos");

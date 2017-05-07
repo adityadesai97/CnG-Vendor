@@ -219,6 +219,12 @@
             android:onClick="addPrice"
             android:text="Add"
             android:id="@+id/detailAddButton"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/priceList"></ListView>
+
     </LinearLayout>
 
 
