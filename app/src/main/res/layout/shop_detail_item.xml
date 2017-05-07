@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/item_detail_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="left"
+    android:layoutDirection="ltr">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_image"
+            android:layout_width="@dimen/shop_item_height"
+            android:layout_height="@dimen/shop_item_height"
+            android:src="@android:drawable/ic_menu_gallery"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/shop_item_height"
+            android:orientation="vertical"
+            android:paddingLeft="8dp"
+            android:layout_toRightOf="@id/item_image">
+            <TextView
+                android:id="@+id/item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                tools:text="Placeholder Item Name"
+                android:textSize="16dp"/>
+            <TextView
+                android:id="@+id/item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1.2"
+                tools:text="Rs 100" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+
+
+
+
+</LinearLayout>

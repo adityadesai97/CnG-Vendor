@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">CnG Vendor</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="home">Home</string>
+    <string name="offers">Offers</string>
+    <string name="feedback">Feedback</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="title_vendor_list">Items</string>
+    <string name="title_vendor_detail">Vendor Detail</string>
+    <string name="title_activity_vendor">Vendor</string>
+    <string name="sign_out_vendor">Sign Out</string>
+    <string name="my_shops">My Shops</string>
+    <string name="title_activity_a">a</string>
+    <string name="title_activity_b">b</string>
+    <string name="title_activity_edit_shop">EditShopActivity</string>
+    <string name="title_activity_edit_item_list">EditItemListActivity</string>
+    <string name="title_activity_edit_item_detail">EditItemDetailActivity</string>
+
+
+    <string name="red">RED</string>
+    <string name="blue">BLUE</string>
+    <string name="green">GREEN</string>
+
+    <string name="category_items">Items</string>
+
+    <!-- Category name for the vocabulary words for colors [CHAR LIMIT=20] -->
+    <string name="category_offers">Offers</string>
+
+    <!-- Category name for the vocabulary words for numbers [CHAR LIMIT=20] -->
+    <string name="category_details">Details</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView android:text="Shop Rating" android:id="@+id/rank_dialog_text1"
+        android:textSize="24dp" android:layout_marginTop="10dp"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <RatingBar
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:id="@+id/dialog_ratingbar"
+        android:layout_gravity="center"
+        android:numStars="5"
+        android:stepSize="0.5"
+        android:isIndicator="false"/>
+
+    <ImageButton
+        android:id="@+id/rank_dialog_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:src="@drawable/ic_offers_24dp"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:focusable="false"
+        android:layout_margin="5dip"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+</LinearLayout>
