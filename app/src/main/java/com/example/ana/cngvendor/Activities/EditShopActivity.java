@@ -278,9 +278,11 @@ public class EditShopActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String  itemValue    = (String) offersListview.getItemAtPosition(i);
-                offerInput.setText(itemValue);
-                offerEditFlag = 1;
-                editOfferPosition = i;
+                if(!itemValue.equals("Add an offer above")){
+                    offerInput.setText(itemValue);
+                    offerEditFlag = 1;
+                    editOfferPosition = i;
+                }
             }
         });
     }
@@ -304,10 +306,9 @@ public class EditShopActivity extends AppCompatActivity {
                 offers.remove("Add an offer above");
             }
             if(!offerInput.getText().toString().equals("")){
-                offers.add(offerCount,offerInput.getText().toString());
+                offers.add(offerInput.getText().toString());
                 offerInput.setText(null);
                 offerInput.setHint("Add some more...");
-                offerCount++;
             }
         }
         updateOffersList();

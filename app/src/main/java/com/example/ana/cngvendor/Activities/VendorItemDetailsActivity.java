@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ana.cngvendor.Objects.ItemDetail;
@@ -38,7 +39,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static com.example.ana.cngvendor.Activities.VendorItemsListActivity.id;
 
 public class VendorItemDetailsActivity extends AppCompatActivity {
@@ -48,7 +51,7 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
     private ListView mListView;
     private VendorItemDetailsAdapter mAdapter;
     private ArrayList<ItemDetail> mDetailList;
-    private ArrayList<ArrayList<String>> mDescriptionList;
+    private ArrayList<ArrayList<String>> mPriceList;
     public String item_name;
     private ProgressBar bar;
     private ImageView emptyImage;
@@ -213,7 +216,7 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
             }
         });
         mDetailList = new ArrayList<ItemDetail>();
-        mDescriptionList = new ArrayList<ArrayList<String>>();
+        mPriceList = new ArrayList<ArrayList<String>>();
 
         /*mDetailList.add(new ItemDetail("Name A", "Rs 100", "Description A"));
         mDetailList.add(new ItemDetail("Name B", "Rs 100", "Description B"));
@@ -255,8 +258,20 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void updateUI(){
         bar.setVisibility(View.GONE);
-        mAdapter = new VendorItemDetailsAdapter(mDetailList,mDescriptionList);
+        for(int i=0;i<mPriceList.size();i++){
+            mPriceList.get(i).removeAll(Collections.singleton("N.A"));
+        }
+        mAdapter = new VendorItemDetailsAdapter(mDetailList,mPriceList);
         mExpandableListView.setAdapter(mAdapter);
+        mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                if(mAdapter.getChildrenCount(i)==0){
+                    Toast.makeText(VendorItemDetailsActivity.this,"Prices are not available for this item. Please check back later.",Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
         mExpandableListView.setChildIndicator(null);
         if(mDetailList.isEmpty()){
             emptyImage.setVisibility(View.VISIBLE);
@@ -287,9 +302,7 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
                         if(iName != null && iPrice != null && iDesc != null) {
                             ItemDetail itemDetail = new ItemDetail(iName, iPrice, iDesc,iUrl);
                             mDetailList.add(itemDetail);
-                            mDescriptionList.add(new ArrayList<String>());
-                            mDescriptionList.get(i).add(iDesc);
-                            i++;
+                            mPriceList.add(iPrice);
                         }
                     }
                     updateUI();
@@ -363,14 +376,14 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
                 convertView = inf.inflate(R.layout.shop_detail_item_child, parent, false);
                 holder = new VendorItemDetailsAdapter.ChildHolder();
 
-                holder.description = (TextView) convertView.findViewById(R.id.item_description);
+                holder.price = (TextView) convertView.findViewById(R.id.item_price);
                 //holder.text.setBackgroundColor(getResources().getColor(R.color.colorTranslucent));
                 convertView.setTag(holder);
             } else {
                 holder = (VendorItemDetailsAdapter.ChildHolder) convertView.getTag();
             }
 
-            holder.description.setText(getChild(groupPosition, childPosition).toString());
+            holder.price.setText(getChild(groupPosition, childPosition).toString());
 //        holder.text.setAutoLinkMask(Linkify.PHONE_NUMBERS);
 
             return convertView;
@@ -385,7 +398,7 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
 
                 holder = new VendorItemDetailsAdapter.GroupHolder();
                 holder.name = (TextView) convertView.findViewById(R.id.item_name);
-                holder.price = (TextView) convertView.findViewById(R.id.item_price);
+                holder.description = (TextView) convertView.findViewById(R.id.item_description);
                 holder.image = (ImageView) convertView.findViewById(R.id.item_image);
                 convertView.setTag(holder);
             } else {
@@ -394,14 +407,20 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
 
             holder.name.setText(getGroup(groupPosition).getItemName().toString());
             //holder.price.setText(getGroup(groupPosition).getItemPrice().toString());
-            String prices="";
-            for(int i = 0;i < getGroup(groupPosition).getItemPrice().size(); i++){
-                if(!getGroup(groupPosition).getItemPrice().get(i).equals("0") && !getGroup(groupPosition).getItemPrice().get(i).equals("N.A")){
-                    prices=prices+getGroup(groupPosition).getItemPrice().get(i)+"\n";
-                }
-            }
-            holder.price.setText(prices);
-            Log.v("tag1",prices);
+//            String prices="";
+//            int count=1;
+//            for(int i = 0;i < getGroup(groupPosition).getItemPrice().size(); i++){
+//                if(!getGroup(groupPosition).getItemPrice().get(i).equals("0") && !getGroup(groupPosition).getItemPrice().get(i).equals("N.A")){
+//                    if(count%2==0){
+//                        prices=prices+getGroup(groupPosition).getItemPrice().get(i)+"\n";
+//                    }
+//                    else{
+//                        prices=prices+getGroup(groupPosition).getItemPrice().get(i)+"     ";
+//                    }
+//                    count++;
+//                }
+//            }
+            holder.description.setText(getGroup(groupPosition).getItemDescription().toString());
             Glide.with(holder.image.getContext()).load(getGroup(groupPosition).getItemUrl().get(0)).into(holder.image);
             return convertView;
         }
@@ -413,12 +432,12 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
 
         private class GroupHolder {
             TextView name;
-            TextView price;
+            TextView description;
             ImageView image;
 
         }
         private  class ChildHolder{
-            TextView description;
+            TextView price;
         }
     }
 

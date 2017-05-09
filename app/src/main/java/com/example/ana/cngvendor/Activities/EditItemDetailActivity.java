@@ -44,8 +44,9 @@ import java.util.List;
 import java.util.Map;
 
 import static android.os.Build.VERSION_CODES.N;
+import static com.example.ana.cngvendor.R.id.offerInput;
 
-public class EditItemDetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EditItemDetailActivity extends AppCompatActivity{
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
@@ -76,21 +77,19 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
     private ProgressBar bar1, bar2, bar3;
     private ArrayList<String> itemUris;
     private int uploadCount = 0;
-    private Spinner spinner;
-    private Spinner spinner2;
-    private List<String> units;
-    private List<String> categories;
-
-
+    private TextInputLayout quantEditText;
+    private TextInputLayout unitEditText;
 
     private String editDetail;
     private String key;
     private String item;
     private String industry;
     private String id;
-    private int quant;
+    private String quant;
     private String unit;
     private int maxWeightPlusOne = 6;
+    private int editpricePosition;
+    private int priceEditFlag=0;
 
     private ListView priceListview;
 
@@ -128,59 +127,10 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
         }
 
         priceTable = new ArrayList<>(maxWeightPlusOne);
-        for (int i = 0; i < maxWeightPlusOne; i++) {
-            priceTable.add(Integer.toString(0));
-        }
 
+        quantEditText = (TextInputLayout) findViewById(R.id.quantity);
 
-
-        // Spinner elements
-        spinner = (Spinner) findViewById(R.id.spinner);
-
-        spinner2 = (Spinner) findViewById(R.id.spinner2);
-
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
-
-        // Spinner Drop down elements
-        categories = new ArrayList<String>();
-        for(int i=1;i<maxWeightPlusOne;i++){
-            categories.add(Integer.toString(i));
-        }
-//        categories.add("1");
-//        categories.add("2");
-//        categories.add("3");
-
-        units = new ArrayList<String>();
-        units.add("Kg");
-        units.add("grams");
-        units.add("Litre");
-        units.add("packet");
-        units.add("unit");
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, units);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-        spinner2.setAdapter(dataAdapter2);
-
-        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                unit = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        unitEditText = (TextInputLayout) findViewById(R.id.unit);
 
         itemNameEditText=(TextInputLayout)findViewById(R.id.edit_item_detail_name);
         itemPriceEditText=(TextInputLayout)findViewById(R.id.edit_item_detail_price);
@@ -195,23 +145,7 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
         industry = i.getStringExtra("industryName");
         id = i.getStringExtra("shopId");
 
-
-
-
-
-
-
         priceListview = (ListView) findViewById(R.id.priceList);
-        String[] values = new String[] { "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View"
-        };
-
 
         mFirebaseStorage = FirebaseStorage.getInstance();
         mStorageReference = mFirebaseStorage.getReference().child("item_photos");
@@ -308,23 +242,15 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
         }
         else{
             setTitle("Add an item");
+            priceTable.add(0,"Add a price above");
             updatePriceList();
         }
     }
 
     public void updatePriceList(){
-        int invisibleEntries=0;
 
-        for(int i=0;i<priceTable.size();i++){
-            if(priceTable.get(i).equals("0") || priceTable.get(i).equals("N.A")){
-                priceTable.set(i,"N.A");
-                invisibleEntries++;
-            }
-        }
         ArrayAdapter<String> priceAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, priceTable);
-
-
 
         PriceTableAdapter adapter = new PriceTableAdapter(this,android.R.layout.simple_list_item_1,priceTable);
 
@@ -334,43 +260,13 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String  itemValue    = (String) priceListview.getItemAtPosition(position);
-                if(!itemValue.equals("N.A")){
+                if(!itemValue.equals("Add a price above")){
                     String[] parts = itemValue.split(" ");
                     itemPriceEditText.getEditText().setText(parts[1]);
-                    if(parts[3].equals("1")){
-                        spinner.setSelection(0);
-                    }
-                    else if(parts[3].equals("2")){
-                        spinner.setSelection(1);
-                    }
-                    else if(parts[3].equals("3")){
-                        spinner.setSelection(2);
-                    }
-                    else if(parts[3].equals("4")){
-                        spinner.setSelection(3);
-                    }
-                    else if(parts[3].equals("5")){
-                        spinner.setSelection(4);
-                    }
-
-                    if(parts[4].equals("Kg")){
-                        spinner2.setSelection(0);
-                    }
-                    else if(parts[4].equals("grams")){
-                        spinner2.setSelection(1);
-                    }
-                    else if(parts[4].equals("Litre")){
-                        spinner2.setSelection(2);
-                    }
-                    else if(parts[4].equals("packet")){
-                        spinner2.setSelection(3);
-                    }
-                    else if(parts[4].equals("unit")){
-                        spinner2.setSelection(4);
-                    }
-                }
-                else{
-                    Toast.makeText(EditItemDetailActivity.this,"Not available",Toast.LENGTH_SHORT).show();
+                    quantEditText.getEditText().setText(parts[3]);
+                    unitEditText.getEditText().setText(parts[4]);
+                    priceEditFlag = 1;
+                    editpricePosition = position;
                 }
             }
         });
@@ -379,39 +275,46 @@ public class EditItemDetailActivity extends AppCompatActivity implements Adapter
     public void addPrice(View view)
     {
         String price=itemPriceEditText.getEditText().getText().toString();
-        if(price.equals("")){
-            priceTable.set(quant+1,"N.A");
+        quant=quantEditText.getEditText().getText().toString();
+        unit=unitEditText.getEditText().getText().toString();
+
+        if(quant.equals("") || unit.equals("")){
+            Toast.makeText(this, "Do not leave Quantity and Unit blank", Toast.LENGTH_SHORT).show();
         }
         else{
-            //priceTable.add(kgs, itemPriceEditText.getText().toString());
-            if(priceTable.size()>=quant+1){
-                priceTable.remove(quant+1);
+            if(priceEditFlag == 1){
+                priceTable.remove(editpricePosition);
+                if(!price.equals("")){
+                    priceTable.add("Rs " + price + " for " + (quant) + " " + unit);
+                    itemPriceEditText.getEditText().setText(null);
+                    quantEditText.getEditText().setText(null);
+                    unitEditText.getEditText().setText(null);
+                }
+                else{
+                    if(priceTable.size()==0){
+                        priceTable.add("Add a price above");
+                    }
+                }
+                priceEditFlag=0;
             }
-            if(unit == null){
-                Toast.makeText(this,"Please select a unit",Toast.LENGTH_SHORT);
-                return;
+            else{
+                if(price.equals("")){
+                    Toast.makeText(this, "Do not leave Price blank", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    if(priceTable.contains("Add a price above")){
+                        priceTable.remove("Add a price above");
+                    }
+                    if(!itemPriceEditText.getEditText().getText().toString().equals("")){
+                        priceTable.add("Rs " + price + " for " + (quant) + " " + unit);
+                        itemPriceEditText.getEditText().setText(null);
+                        quantEditText.getEditText().setText(null);
+                        unitEditText.getEditText().setText(null);
+                    }
+                }
             }
-
-            priceTable.add(quant+1,"Rs " + price + " for " + (quant+1) + " " + unit);
-            Toast.makeText(EditItemDetailActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+            updatePriceList();
         }
-        updatePriceList();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // On selecting a spinner item
-        String item = parent.getItemAtPosition(position).toString();
-        quant = position;
-
-        // Showing selected spinner item
-        Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
-
-    }
-
-    public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     public void uploadPic1(View view){
