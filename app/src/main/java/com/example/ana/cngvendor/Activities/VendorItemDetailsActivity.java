@@ -257,9 +257,10 @@ public class VendorItemDetailsActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void updateUI(){
+        mSwipeRefreshLayout.setRefreshing(false);
         bar.setVisibility(View.GONE);
         for(int i=0;i<mPriceList.size();i++){
-            mPriceList.get(i).removeAll(Collections.singleton("N.A"));
+            mPriceList.get(i).removeAll(Collections.singleton("Add a price above"));
         }
         mAdapter = new VendorItemDetailsAdapter(mDetailList,mPriceList);
         mExpandableListView.setAdapter(mAdapter);

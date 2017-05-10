@@ -93,6 +93,7 @@ public class EditItemDetailActivity extends AppCompatActivity{
     private int maxWeightPlusOne = 6;
     private int editpricePosition;
     private int priceEditFlag=0;
+    private int alreadyExistsFlag=0;
 
     private ListView priceListview;
 
@@ -202,7 +203,29 @@ public class EditItemDetailActivity extends AppCompatActivity{
                     if(itemUris.size()>=1){
                         if(!itemName.equals("") || !itemDescription.equals("")){
                             mDatabaseReference = mFirebaseDatabase.getReference().child(industry).child(id).child(item.replaceAll("[^A-Za-z0-9 ]", ""));
-                            mDatabaseReference.push().setValue(new ItemDetail(itemName,priceTable,itemDescription,itemUris));
+                            mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                        if(snapshot.child("itemName").getValue().equals(itemName)){
+                                            alreadyExistsFlag=1;
+                                            Toast.makeText(EditItemDetailActivity.this,"Item already exists",Toast.LENGTH_SHORT).show();
+                                            break;
+                                        }
+//                                        else{
+//                                            mDatabaseReference.push().setValue(new ItemDetail(itemName,priceTable,itemDescription,itemUris));
+//                                        }
+                                    }
+                                    if(alreadyExistsFlag==0){
+                                        mDatabaseReference.push().setValue(new ItemDetail(itemName,priceTable,itemDescription,itemUris));
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                             Intent i = new Intent(view.getContext(), MainActivity.class);
                             startActivity(i);
                         }
@@ -236,7 +259,11 @@ public class EditItemDetailActivity extends AppCompatActivity{
                             key = (String) snapshot.getKey();
                             itemUris = (ArrayList<String>)snapshot.child("itemUrl").getValue();
                             if(!itemUris.get(0).equals("0")){
-                                Glide.with(mImageView1.getContext()).load(itemUris.get(0)).into(mImageView1);
+                                try{
+                                    Glide.with(mImageView1.getContext()).load(itemUris.get(0)).into(mImageView1);
+                                }catch (IllegalArgumentException e){
+                                    Glide.clear(mImageView1);
+                                }
                                 loaded1 = true;
                                 mImageView2.setVisibility(View.VISIBLE);
                             }
@@ -245,20 +272,35 @@ public class EditItemDetailActivity extends AppCompatActivity{
                                 mImageView1.setImageResource(R.drawable.ic_add_black_24px);
                             }
                             if(!itemUris.get(1).equals("0")){
-                                Glide.with(mImageView2.getContext()).load(itemUris.get(1)).into(mImageView2);
+                                try {
+                                    Glide.with(mImageView2.getContext()).load(itemUris.get(1)).into(mImageView2);
+                                }catch (IllegalArgumentException e){
+                                    Glide.clear(mImageView2);
+                                }
+
                                 loaded2 = true;
                                 mImageView3.setVisibility(View.VISIBLE);
+                                imageView2.setVisibility(View.VISIBLE);
                             }
                             else{
                                 mImageView3.setClickable(false);
-                                mImageView2.setImageResource(R.drawable.ic_add_black_24px);
+                                if(!itemUris.get(0).equals("0")) {
+                                    mImageView2.setImageResource(R.drawable.ic_add_black_24px);
+                                }
                             }
                             if(!itemUris.get(2).equals("0")){
-                                Glide.with(mImageView3.getContext()).load(itemUris.get(2)).into(mImageView3);
+                                try{
+                                    Glide.with(mImageView3.getContext()).load(itemUris.get(2)).into(mImageView3);
+                                }catch (IllegalArgumentException e) {
+                                    Glide.clear(mImageView3);
+                                }
                                 loaded3 = true;
+                                imageView3.setVisibility(View.VISIBLE);
                             }
                             else {
-                                mImageView3.setImageResource(R.drawable.ic_add_black_24px);
+                                if(!itemUris.get(1).equals("0")) {
+                                    mImageView3.setImageResource(R.drawable.ic_add_black_24px);
+                                }
                             }
 
 

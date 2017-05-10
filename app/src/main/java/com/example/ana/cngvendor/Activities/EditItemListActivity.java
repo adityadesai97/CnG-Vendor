@@ -2,10 +2,12 @@ package com.example.ana.cngvendor.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+
 public class EditItemListActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
@@ -35,6 +39,7 @@ public class EditItemListActivity extends AppCompatActivity {
     private String oldItemName;
     private String editItem;
     private ArrayList<ItemDetail> temp;
+    private int alreadyExistsFlag=0;
 
     String key;
 
@@ -80,7 +85,7 @@ public class EditItemListActivity extends AppCompatActivity {
 
                         //Copying Data
                         DatabaseReference copyReference = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(oldItemName);
-                        copyReference.addValueEventListener(new ValueEventListener() {
+                        copyReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
@@ -89,8 +94,8 @@ public class EditItemListActivity extends AppCompatActivity {
                                     String iDesc = (String) snapshot.child("itemDescription").getValue();
                                     ArrayList<String> iUrl = (ArrayList<String>) snapshot.child("itemUrl").getValue();
                                     temp.add(new ItemDetail(iName, iPrice, iDesc,iUrl));
-
                                 }
+                                restoreNode();
                             }
 
                             @Override
@@ -101,20 +106,35 @@ public class EditItemListActivity extends AppCompatActivity {
 
                         //Deleting this node
                         copyReference.removeValue();
-
-                        //New Node
-
-                        copyReference = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(itemName);
-                        for(int i = 0; i < temp.size(); i++){
-                            copyReference.push().setValue(temp.get(i));
-                        }
-
-
                     }
 
                     if(editItem.equals("no")){
-                        mDatabaseReference = mFirebaseDatabase.getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id);
-                        mDatabaseReference.push().setValue(new MenuItem(itemName));
+                        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id);
+                        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int count=0;
+                                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                    count++;
+                                    if(snapshot.hasChild("itemName") && snapshot.child("itemName").getValue().equals(itemName)){
+                                        alreadyExistsFlag=1;
+                                        Toast.makeText(EditItemListActivity.this,"Item already exists",Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
+//                                    else{
+//                                        mDatabaseReference.push().setValue(new MenuItem(itemName));
+//                                    }
+                                }
+                                if(alreadyExistsFlag==0){
+                                    mDatabaseReference.push().setValue(new MenuItem(itemName));
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                     Intent i =new Intent(getBaseContext(),MainActivity.class);
                     startActivity(i);
@@ -155,6 +175,15 @@ public class EditItemListActivity extends AppCompatActivity {
         }
         else{
             setTitle("Add an item");
+        }
+    }
+
+
+    public void restoreNode(){
+        Log.v("tag2", Integer.toString(temp.size()));
+        DatabaseReference copyReference2 = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(itemName);
+        for(int i = 0; i < temp.size(); i++){
+            copyReference2.push().setValue(temp.get(i));
         }
     }
 
