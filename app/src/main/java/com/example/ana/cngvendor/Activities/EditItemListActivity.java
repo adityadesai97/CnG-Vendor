@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.ana.cngvendor.Objects.ItemDetail;
 import com.example.ana.cngvendor.Objects.MenuItem;
 import com.example.ana.cngvendor.R;
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,9 @@ public class EditItemListActivity extends AppCompatActivity {
     private ProgressBar pb;
 
     private String itemName;
+    private String oldItemName;
     private String editItem;
+    private ArrayList<ItemDetail> temp;
 
     String key;
 
@@ -50,7 +54,9 @@ public class EditItemListActivity extends AppCompatActivity {
         Intent i = getIntent();
         itemName = i.getStringExtra("itemName");
         editItem = i.getStringExtra("editItem");
+        oldItemName = itemName;
 
+        temp = new ArrayList<ItemDetail>();
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.item_edit_done_fab);
@@ -71,6 +77,40 @@ public class EditItemListActivity extends AppCompatActivity {
                         Map<String,Object> taskMap = new HashMap<String,Object>();
                         taskMap.put("itemName", itemNameEditText.getEditText().getText().toString());
                         editReference.updateChildren(taskMap);
+
+
+                        //Copying Data
+                        DatabaseReference copyReference = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(oldItemName);
+                        editReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                    String iName = (String) snapshot.child("itemName").getValue();
+                                    ArrayList<String> iPrice = (ArrayList<String>) snapshot.child("itemPrice").getValue();
+                                    String iDesc = (String) snapshot.child("itemDescription").getValue();
+                                    ArrayList<String> iUrl = (ArrayList<String>) snapshot.child("itemUrl").getValue();
+                                    temp.add(new ItemDetail(iName, iPrice, iDesc,iUrl));
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        //Deleting this node
+                        copyReference.removeValue();
+
+                        //New Node
+
+                        copyReference = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(itemName);
+                        for(int i = 0; i < temp.size(); i++){
+                            copyReference.push().setValue(temp.get(i));
+                        }
+
+
                     }
 
                     if(editItem.equals("no")){
