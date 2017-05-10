@@ -69,9 +69,8 @@ public class EditItemListActivity extends AppCompatActivity {
                     Toast.makeText(EditItemListActivity.this,"Pleae enter the name of the item.",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    mFirebaseDatabase=FirebaseDatabase.getInstance();
+                    //mFirebaseDatabase=FirebaseDatabase.getInstance();
                     //mDatabaseReference=mFirebaseDatabase.getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id);
-
                     if(editItem.equals("yes")){
                         DatabaseReference editReference = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(key);
                         Map<String,Object> taskMap = new HashMap<String,Object>();
@@ -81,7 +80,7 @@ public class EditItemListActivity extends AppCompatActivity {
 
                         //Copying Data
                         DatabaseReference copyReference = FirebaseDatabase.getInstance().getReference().child(VendorItemsListActivity.industryName).child(VendorItemsListActivity.id).child(oldItemName);
-                        editReference.addValueEventListener(new ValueEventListener() {
+                        copyReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){

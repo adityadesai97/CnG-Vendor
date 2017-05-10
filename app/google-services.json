@@ -67,6 +67,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "228435502475-niltofkrjkriu47sbrmflbb5m9bnfj32.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ana.cngvendor",
+            "certificate_hash": "0e861b3aef62f8144834f185d1d1c5245e17cf4b"
+          }
+        },
+        {
           "client_id": "228435502475-q53gfldoe2vikpbidbh74b448ejlk168.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

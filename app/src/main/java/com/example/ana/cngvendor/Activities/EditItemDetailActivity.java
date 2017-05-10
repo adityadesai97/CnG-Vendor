@@ -69,7 +69,7 @@ public class EditItemDetailActivity extends AppCompatActivity{
     private static final int RC_PHOTO_PICKER_2 = 3;
     private static final int RC_PHOTO_PICKER_3 = 4;
     private int imgFlag=0;
-    private boolean first1,first2,first3;
+    private boolean loaded1,loaded2,loaded3;
 
 
     private ImageView mImageView1;
@@ -120,19 +120,22 @@ public class EditItemDetailActivity extends AppCompatActivity{
         mImageView2 = (ImageView) findViewById(R.id.itemImage2);
         mImageView3 = (ImageView) findViewById(R.id.itemImage3);
 
+
         imageView1 = (ImageView) findViewById(R.id.itemIndicator1);
         imageView2 = (ImageView) findViewById(R.id.itemIndicator2);
         imageView3 = (ImageView) findViewById(R.id.itemIndicator3);
 
+
+        imageView1.setVisibility(View.VISIBLE);
         imageView2.setVisibility(View.INVISIBLE);
         imageView3.setVisibility(View.INVISIBLE);
 
         mImageView1.setImageResource(R.drawable.ic_add_black_24px);
-        mImageView1.setClickable(true);
-        mImageView2.setClickable(false);
-        mImageView3.setClickable(false);
 
-        first1 = first2 = first3 = true;
+        /*mImageView1.setClickable(true);
+        mImageView2.setClickable(false);
+        mImageView3.setClickable(false);  */
+
 
         itemUris = new ArrayList<String>();
         for(int j=0;j<3;j++){
@@ -234,13 +237,33 @@ public class EditItemDetailActivity extends AppCompatActivity{
                             itemUris = (ArrayList<String>)snapshot.child("itemUrl").getValue();
                             if(!itemUris.get(0).equals("0")){
                                 Glide.with(mImageView1.getContext()).load(itemUris.get(0)).into(mImageView1);
+                                loaded1 = true;
+                                mImageView2.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                mImageView2.setClickable(false); mImageView3.setClickable(false);
+                                mImageView1.setImageResource(R.drawable.ic_add_black_24px);
                             }
                             if(!itemUris.get(1).equals("0")){
                                 Glide.with(mImageView2.getContext()).load(itemUris.get(1)).into(mImageView2);
+                                loaded2 = true;
+                                mImageView3.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                mImageView3.setClickable(false);
+                                mImageView2.setImageResource(R.drawable.ic_add_black_24px);
                             }
                             if(!itemUris.get(2).equals("0")){
                                 Glide.with(mImageView3.getContext()).load(itemUris.get(2)).into(mImageView3);
+                                loaded3 = true;
                             }
+                            else {
+                                mImageView3.setImageResource(R.drawable.ic_add_black_24px);
+                            }
+
+
+
+
                             break;
                         }
                     }
@@ -392,12 +415,15 @@ public class EditItemDetailActivity extends AppCompatActivity{
                                         .load(taskSnapshot.getDownloadUrl().toString())
                                         .into(mImageView1);
 
-                                if(first1){
+
+                                if(!loaded1){
                                     mImageView2.setImageResource(R.drawable.ic_add_black_24px);
-                                    mImageView2.setClickable(true);
-                                    imageView1.setVisibility(View.VISIBLE);
-                                    first1 = false;
+                                    imageView2.setVisibility(View.VISIBLE);
+                                    loaded1 = true;
                                 }
+
+                                mImageView2.setClickable(true);
+
 
                                 bar1.setVisibility(View.GONE);
                                 imgFlag=0;
@@ -439,12 +465,13 @@ public class EditItemDetailActivity extends AppCompatActivity{
                                         .load(taskSnapshot.getDownloadUrl().toString())
                                         .into(mImageView2);
 
-                                if(first2){
+                                if(!loaded2){
                                     mImageView3.setImageResource(R.drawable.ic_add_black_24px);
-                                    mImageView3.setClickable(true);
                                     imageView3.setVisibility(View.VISIBLE);
-                                    first2 = false;
+                                    loaded2 = true;
                                 }
+
+                                mImageView3.setClickable(true);
 
                                 bar2.setVisibility(View.GONE);
                                 imgFlag=0;
@@ -486,11 +513,7 @@ public class EditItemDetailActivity extends AppCompatActivity{
                                         .load(taskSnapshot.getDownloadUrl().toString())
                                         .into(mImageView3);
 
-                                if(first3){
-
-                                }
                                 bar3.setVisibility(View.GONE);
-                                mImageView3.setClickable(false);
                                 imgFlag=0;
                             }
                         });
