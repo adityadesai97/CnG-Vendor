@@ -69,11 +69,14 @@ public class EditItemDetailActivity extends AppCompatActivity{
     private static final int RC_PHOTO_PICKER_2 = 3;
     private static final int RC_PHOTO_PICKER_3 = 4;
     private int imgFlag=0;
+    private boolean first1,first2,first3;
 
 
     private ImageView mImageView1;
     private ImageView mImageView2;
     private ImageView mImageView3;
+
+    private ImageView imageView1,imageView2,imageView3;
     private ProgressBar bar1, bar2, bar3;
     private ArrayList<String> itemUris;
     private int uploadCount = 0;
@@ -117,9 +120,19 @@ public class EditItemDetailActivity extends AppCompatActivity{
         mImageView2 = (ImageView) findViewById(R.id.itemImage2);
         mImageView3 = (ImageView) findViewById(R.id.itemImage3);
 
-        mImageView1.setImageResource(R.drawable.ic_insert_photo_black_24px);
+        imageView1 = (ImageView) findViewById(R.id.itemIndicator1);
+        imageView2 = (ImageView) findViewById(R.id.itemIndicator2);
+        imageView3 = (ImageView) findViewById(R.id.itemIndicator3);
+
+        imageView2.setVisibility(View.INVISIBLE);
+        imageView3.setVisibility(View.INVISIBLE);
+
+        mImageView1.setImageResource(R.drawable.ic_add_black_24px);
+        mImageView1.setClickable(true);
         mImageView2.setClickable(false);
         mImageView3.setClickable(false);
+
+        first1 = first2 = first3 = true;
 
         itemUris = new ArrayList<String>();
         for(int j=0;j<3;j++){
@@ -379,9 +392,13 @@ public class EditItemDetailActivity extends AppCompatActivity{
                                         .load(taskSnapshot.getDownloadUrl().toString())
                                         .into(mImageView1);
 
-                                mImageView2.setImageResource(R.drawable.ic_insert_photo_black_24px);
-                                mImageView2.setClickable(true);
-                                mImageView1.setClickable(false);
+                                if(first1){
+                                    mImageView2.setImageResource(R.drawable.ic_add_black_24px);
+                                    mImageView2.setClickable(true);
+                                    imageView1.setVisibility(View.VISIBLE);
+                                    first1 = false;
+                                }
+
                                 bar1.setVisibility(View.GONE);
                                 imgFlag=0;
                             }
@@ -422,9 +439,13 @@ public class EditItemDetailActivity extends AppCompatActivity{
                                         .load(taskSnapshot.getDownloadUrl().toString())
                                         .into(mImageView2);
 
-                                mImageView3.setImageResource(R.drawable.ic_insert_photo_black_24px);
-                                mImageView3.setClickable(true);
-                                mImageView2.setClickable(false);
+                                if(first2){
+                                    mImageView3.setImageResource(R.drawable.ic_add_black_24px);
+                                    mImageView3.setClickable(true);
+                                    imageView3.setVisibility(View.VISIBLE);
+                                    first2 = false;
+                                }
+
                                 bar2.setVisibility(View.GONE);
                                 imgFlag=0;
                             }
@@ -464,6 +485,10 @@ public class EditItemDetailActivity extends AppCompatActivity{
                                 Glide.with(mImageView3.getContext())
                                         .load(taskSnapshot.getDownloadUrl().toString())
                                         .into(mImageView3);
+
+                                if(first3){
+
+                                }
                                 bar3.setVisibility(View.GONE);
                                 mImageView3.setClickable(false);
                                 imgFlag=0;

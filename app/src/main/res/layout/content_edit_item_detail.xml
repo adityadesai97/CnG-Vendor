@@ -37,6 +37,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/itemIndicator1"
                     android:src="@drawable/ic_add_a_photo_grey_24px"
                     android:background="@android:color/transparent"
                     android:layout_alignBottom="@id/itemImage1"
@@ -65,6 +66,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/itemIndicator2"
                     android:src="@drawable/ic_add_a_photo_grey_24px"
                     android:background="@android:color/transparent"
                     android:layout_alignBottom="@id/itemImage2"
@@ -93,6 +95,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/itemIndicator3"
                     android:src="@drawable/ic_add_a_photo_grey_24px"
                     android:background="@android:color/transparent"
                     android:layout_alignBottom="@id/itemImage3"
