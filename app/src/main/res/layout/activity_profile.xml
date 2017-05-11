@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryLight"
     tools:context="com.example.ana.cngvendor.Activities.ProfileActivity">
 
     <LinearLayout
@@ -21,24 +20,40 @@
             android:layout_gravity="center_horizontal"
             android:onClick="getPicture"
             android:src="@drawable/com_facebook_profile_picture_blank_square"
-            />
+            android:layout_marginTop="10dp"/>
 
-        <TextView
-            android:id="@+id/userName"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="Name"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/userEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="E-mail"
-            android:textSize="24sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Name"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/userEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="E-mail"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+
+
+        </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"

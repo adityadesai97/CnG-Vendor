@@ -237,10 +237,10 @@ public class  MainActivity extends AppCompatActivity
         }else if (id == R.id.myshop) {
             fragment=new MyShopsFragment();
         } else if (id == R.id.sign_out) {
-            // Till sign out page is not made
-//            SharedPreferences.Editor editor = prefs.edit();
-//            editor.putBoolean("firstTime", false);
-//            editor.commit();
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("firstTime", false);
+            editor.commit();
             AuthUI.getInstance()
                     .signOut(this)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {

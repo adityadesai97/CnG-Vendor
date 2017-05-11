@@ -38,7 +38,7 @@
                         android:layout_height="100dp"
                         android:id="@+id/shopImage"
                         android:onClick="uploadItemPic"
-                        android:src="@drawable/ic_insert_photo_black_24px"
+                        android:src="@drawable/ic_insert_photo_grey_24px"
                         />
                     <ImageView
                         android:layout_width="wrap_content"

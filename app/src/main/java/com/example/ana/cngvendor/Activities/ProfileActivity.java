@@ -31,7 +31,6 @@ public class ProfileActivity extends AppCompatActivity {
     private SharedPreferences sharedPrefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this,"Please dont save if u have already with this account",Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
