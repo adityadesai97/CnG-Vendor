@@ -7,7 +7,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="7d6569a1c54e7f36da2ceb0751ab8c9856c72ed2">
+        sha1="e3ed4b05057f76e8f7383b3e5b8bd33a2f260514">
         <dex dex="/home/neil/AndroidStudioProjects/CnG-Vendor/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_b0be86eebdad789c4ceef1d0de370708c8e6be70/classes.dex" />
     </item>
     <item

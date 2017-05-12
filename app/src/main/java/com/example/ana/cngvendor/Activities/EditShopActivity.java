@@ -206,6 +206,7 @@ public class EditShopActivity extends AppCompatActivity {
                 else{
                     Intent i =new Intent(getBaseContext(),MainActivity.class);
                     startActivity(i);
+                    finish();
                 }
             }
         });
@@ -415,6 +416,7 @@ public class EditShopActivity extends AppCompatActivity {
 
             Intent i =new Intent(getBaseContext(),MainActivity.class);
             startActivity(i);
+            finish();
         }
         else{
             Toast.makeText(this,"Please select an image",Toast.LENGTH_LONG).show();

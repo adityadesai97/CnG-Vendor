@@ -195,6 +195,7 @@ public class EditItemDetailActivity extends AppCompatActivity{
                         editReference.updateChildren(taskMap);
                         Intent i = new Intent(view.getContext(), MainActivity.class);
                         startActivity(i);
+                        finish();
                     }
 
                 }
@@ -228,6 +229,7 @@ public class EditItemDetailActivity extends AppCompatActivity{
                             });
                             Intent i = new Intent(view.getContext(), MainActivity.class);
                             startActivity(i);
+                            finish();
                         }
                         else{
                             Toast.makeText(EditItemDetailActivity.this,"Please dont leave any field blank",Toast.LENGTH_SHORT).show();
